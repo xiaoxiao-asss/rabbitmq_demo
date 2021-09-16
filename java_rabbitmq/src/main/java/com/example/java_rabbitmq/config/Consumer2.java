@@ -1,5 +1,7 @@
 package com.example.java_rabbitmq.config;
 
+import com.rabbitmq.client.*;
+
 import java.io.IOException;
 
 public class Consumer2 {

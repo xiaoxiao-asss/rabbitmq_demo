@@ -1,15 +1,19 @@
 package com.example.springboot_rabbitmq;
 
-import com.example.springboot_rabbitmq.config.User;
+import com.example.springboot_rabbitmq.entity.Demo;
+import com.example.springboot_rabbitmq.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.UUID;
 
 @SpringBootTest
 @Slf4j
@@ -22,9 +26,31 @@ class SpringbootRabbitmqApplicationTests {
     private RabbitTemplate rabbitTemplate;
 
     @Test
+    public void testSendMessage3(){
+        for (int i = 1; i <= 10; i++) {
+            if(i%2==0){
+                rabbitTemplate.convertAndSend("hello_exchange","test",new User(i,"的代价"),new CorrelationData(UUID.randomUUID().toString()));
+            }else{
+                 rabbitTemplate.convertAndSend("hello_exchange","test",new Demo(i,"demo............."),new CorrelationData(UUID.randomUUID().toString()));
+                 //测试将消息投递到交换机没有绑定的路由键，触发ReturnsCallback失败回调
+                //  rabbitTemplate.convertAndSend("hello_exchange","wws",new Demo(i,"demo............."),new CorrelationData(UUID.randomUUID().toString()));
+            }
+
+        }
+
+    }
+
+    @Test
     public void testSendMessage2(){
-        User user=new User(2,"的代价");
-        rabbitTemplate.convertAndSend("hello_exchange","test",user);
+        for (int i = 1; i <= 10; i++) {
+            if(i%2==0){
+                rabbitTemplate.convertAndSend("hello_exchange","test",new User(i,"的代价"));
+            }else{
+                rabbitTemplate.convertAndSend("hello_exchange","test",new Demo(i,"demo............."));
+            }
+
+        }
+
     }
 
 
